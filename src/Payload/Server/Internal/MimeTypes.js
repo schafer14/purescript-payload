@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-var mimeTypesDb = {
+const mimeTypesDb = {
   "application/1d-interleaved-parityfec": {
     "source": "iana"
   },
