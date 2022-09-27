@@ -98,7 +98,9 @@ get_ host path headers = do
             { method = Left GET
             , url = host <> "/" <> path
             , responseFormat = ResponseFormat.string
-            , headers = (\(Tuple name val) -> RequestHeader name val) <$> Headers.toUnfoldable headers }
+            , headers = ((\(Tuple name val) -> RequestHeader name val) <$> Headers.toUnfoldable headers) <>
+                        ((\cookie -> RequestHeader "Set-Cookie" cookie) <$> Headers.getCookies headers)
+            }
 
 options :: String -> String -> Aff ApiResponse
 options host path = do

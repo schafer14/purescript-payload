@@ -2,6 +2,7 @@ module Payload.Server.Internal.ServerResponse where
 
 import Prelude
 
+import Data.Array (null)
 import Data.Either (Either(..))
 import Data.Traversable (sequence_)
 import Data.Tuple (Tuple(..))
@@ -59,7 +60,10 @@ endResponse res = Aff.makeAff \cb -> do
 
 writeHeaders :: HTTP.Response -> Headers -> Effect Unit
 writeHeaders res headers = do
-  let (sets :: Array (Effect Unit)) = map (\(Tuple k v) -> HTTP.setHeader res k v) (Headers.toUnfoldable headers)
+  let (sets :: Array (Effect Unit)) =
+        (map (\(Tuple k v) -> HTTP.setHeader res k v) (Headers.toUnfoldable headers)) <>
+        let cookies = Headers.getCookies headers
+        in pure $ if not $ null cookies then HTTP.setHeaders res "Set-Cookie" cookies else pure unit
   sequence_ sets
 
 writeStringBody :: HTTP.Response -> String -> Effect Unit

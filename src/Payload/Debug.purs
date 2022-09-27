@@ -5,7 +5,7 @@ import Prelude
 import Data.Either (Either(..))
 import Data.String as String
 import Data.Tuple (Tuple(..))
-import Payload.Headers (Headers, toUnfoldable)
+import Payload.Headers (Headers, getCookies, toUnfoldable)
 import Payload.ResponseTypes (Response(..))
 
 foreign import jsonStringify :: forall a. a -> String
@@ -21,7 +21,8 @@ instance showDebugResponse :: ShowDebug a => ShowDebug (Response a) where
     "Body:\n" <> showDebug r.body
     where
       showHeaders :: Headers -> String
-      showHeaders headers = "  " <> String.joinWith "\n  " (showHeader <$> toUnfoldable headers)
+      showHeaders headers = "  " <> String.joinWith "\n  "
+        (showHeader <$> (toUnfoldable headers <> map (Tuple "Set-Cookie") (getCookies headers)))
       showHeader :: Tuple String String -> String
       showHeader (Tuple key val) = show key <> " " <> show val
 else instance showDebugEither :: (ShowDebug a, ShowDebug b) => ShowDebug (Either a b) where
