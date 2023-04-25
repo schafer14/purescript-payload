@@ -1,4 +1,4 @@
-export let webEnvironment = !!window;
+export let webEnvironment = (typeof window !== 'undefined');
 export let globalDriver = null;
 
 export function setDriver(driver) {
